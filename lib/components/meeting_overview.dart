@@ -1,73 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar/flutter_calendar.dart';
-import '../model/location.dart';
+import '../utils/net_util.dart';
 import '../model/meeting.dart';
 
 class MeetingOverview extends StatefulWidget{
-  final Room room;
+  int roomId;
+  String roomName;
   
-  MeetingOverview(this.room);
+  MeetingOverview(this.roomId, this.roomName);
   
   @override
   State<StatefulWidget> createState() {
-    return new MeetingOverviewState(room);
+    return new MeetingOverviewState(roomId, roomName);
   }
 }
 
 class MeetingOverviewState extends State<MeetingOverview>{
-  final Room room;
-  List<Meeting> meetingList;
+  int roomId;
+  String roomName;
   
-  MeetingOverviewState(this.room);
-  
+  MeetingOverviewState(this.roomId, this.roomName);
+
+  List<Meetings> meetingAll;
+  List<Meetings> meetingList;
+
+  @override
+  void initState() {
+    getContent();
+    super.initState();
+  }
+
+  void getContent(){
+    Map<String, dynamic> params = {"id": roomId};
+    NetUitl.get(
+      "/room/meetings",
+      (data){
+        Meeting rawData = Meeting.fromJson(data);
+        setState(() {
+          meetingAll = rawData.extras.meetings;
+        });
+      },
+      params,
+    );
+  }
+
   void setMeetingList(String date){
     setState(() {
       meetingList = new List();
-      for(int i = 0; i < room.meetings.length; i++){
-        if(Meeting.fromJson(room.meetings[i]).start_time.substring(0, 10) == date)
-          meetingList.add(Meeting.fromJson(room.meetings[i]));
+      for(int i = 0; i < meetingAll.length; i++){
+        if(meetingAll[i].startTime.substring(0, 10) == date)
+          meetingList.add(meetingAll[i]);
       }
     });
   }
 
   void initMeetingList(String date){
     meetingList = new List();
-    for(int i = 0; i < room.meetings.length; i++){
-      if(Meeting.fromJson(room.meetings[i]).start_time.substring(0, 10) == date)
-        meetingList.add(Meeting.fromJson(room.meetings[i]));
+    for(int i = 0; i < meetingAll.length; i++){
+      if(meetingAll[i].startTime.substring(0, 10) == date)
+        meetingList.add(meetingAll[i]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if(meetingList == null){
-      initMeetingList(DateTime.now().toString().substring(0, 10));
-    }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(room.room_number),
-      ),
-      body: Column(
-        children: <Widget>[
-          Calendar(
-            onDateSelected: (date){
-              setMeetingList(date.toString().substring(0, 10));
-            },
-          ),
-          Expanded(
-            child: MeetingOfDay(list: meetingList),
-          ),
-        ],
-      ),
-    );
+    if(meetingAll == null){
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    else{
+      if(meetingList == null){
+        initMeetingList(DateTime.now().toString().substring(0, 10));
+      }
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(roomName),
+        ),
+        body: Column(
+          children: <Widget>[
+            Calendar(
+              onDateSelected: (date){
+                setMeetingList(date.toString().substring(0, 10));
+              },
+            ),
+            Expanded(
+              child: MeetingOfDay(list: meetingList),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
 class MeetingOfDay extends StatelessWidget{
   MeetingOfDay({this.list});
 
-  final List<Meeting> list;
+  final List<Meetings> list;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +115,7 @@ class MeetingOfDay extends StatelessWidget{
       );
   }
 
-  Widget _buildTimeLine(Meeting meeting) {
+  Widget _buildTimeLine(Meetings meeting) {
     return Stack(
       children: <Widget>[
         Padding(
@@ -96,9 +127,9 @@ class MeetingOfDay extends StatelessWidget{
               width: double.infinity,
               child: Column(
                 children: <Widget>[
-                  Text('时间：' + meeting.start_time.substring(11) + '——' + meeting.end_time.substring(11)),
-                  Text('会议名称：' + meeting.meeting_name),
-                  Text('会议主持人：' + meeting.holder),
+                  Text('时间：' + meeting.startTime.substring(11, 16) + '——' + meeting.endTime.substring(11, 16)),
+                  Text('会议名称：' + meeting.name),
+                  Text('会议主持人：' + meeting.leader.realName),
                 ],
               ),
             ),
