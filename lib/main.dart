@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:badges/badges.dart';
 import './views/schedule.dart';
 import './views/meetingroom.dart';
-import './views/appointment.dart';
+import './views/reservation.dart';
 import 'package:meeting/components/user_drawer.dart';
 
 void main() => runApp(MyApp());
