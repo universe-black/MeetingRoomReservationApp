@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class NetUitl{
+class NetUtil{
   static BaseOptions options = new BaseOptions(
     baseUrl: "http://111.231.70.170:8000",
     connectTimeout: 5000,

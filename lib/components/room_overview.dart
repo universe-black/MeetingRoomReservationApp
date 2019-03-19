@@ -36,7 +36,7 @@ class RoomOverviewState extends State<RoomOverview>{
 
   void getContent(){
     Map<String, dynamic> params = {"size": 1000000};
-    NetUitl.get(
+    NetUtil.get(
       "/room/list",
           (data){
         RoomList roomList = RoomList.fromJson(data);
@@ -137,7 +137,7 @@ class RoomListViewState extends State<RoomListView>{
 
   void getContent(){
     Map<String, dynamic> params = {"size": 1000000};
-    NetUitl.get(
+    NetUtil.get(
       "/room/list",
           (data){
         RoomList roomList = RoomList.fromJson(data);

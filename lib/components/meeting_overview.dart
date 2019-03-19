@@ -32,7 +32,7 @@ class MeetingOverviewState extends State<MeetingOverview>{
 
   void getContent(){
     Map<String, dynamic> params = {"id": roomId};
-    NetUitl.get(
+    NetUtil.get(
       "/room/meetings",
       (data){
         Meeting rawData = Meeting.fromJson(data);
