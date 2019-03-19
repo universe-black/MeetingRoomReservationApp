@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:badges/badges.dart';
 import './views/schedule.dart';
 import './views/meetingroom.dart';
 import './views/appointment.dart';
-import './views/user_drawer.dart';
+import 'package:meeting/components/user_drawer.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: MyHomePage(),
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => new MyHomePage(),
+      },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -98,4 +102,39 @@ class MyHomePageState extends State<MyHomePage>{
       ),
     );
   }
+}
+
+class SplashScreen extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return new SplashScreenState();
+  }
+
+}
+
+class SplashScreenState extends State<SplashScreen>{
+  startTime() async{
+    var _duration = new Duration(seconds: 2);
+    return new Timer(_duration,toGo);
+  }
+
+  void toGo(){
+    Navigator.of(context).pushReplacementNamed('/home');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTime();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Image.asset('images/splash.png'),
+      ),
+    );
+  }
+
 }
