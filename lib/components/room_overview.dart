@@ -161,7 +161,6 @@ class RoomListViewState extends State<RoomListView>{
 
   Future<Null> _onRefresh() async{
     await Future.delayed(Duration(seconds: 1), (){
-      print('hello');
       setState(() {
         getContent();
       });
