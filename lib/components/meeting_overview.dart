@@ -66,8 +66,13 @@ class MeetingOverviewState extends State<MeetingOverview>{
   Widget build(BuildContext context) {
 
     if(meetingAll == null){
-      return Center(
-        child: CircularProgressIndicator(),
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(roomName),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
     else{
