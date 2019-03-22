@@ -12,7 +12,7 @@ class ScheduleState extends State<Schedule>{
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: ScheduleOverview(),
+      body: ScheduleOverview(1),
     );
   }
 }

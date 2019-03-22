@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import '../components/reservation_form.dart';
 
-class Appointment extends StatefulWidget{
+class Reservation extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return new AppointmentState();
+    return new ReservationState();
   }
 }
 
-class AppointmentState extends State<Appointment>{
+class ReservationState extends State<Reservation>{
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Center(
-        child: Text('会议预约'),
+        child: ReservationForm(),
       ),
     );
   }

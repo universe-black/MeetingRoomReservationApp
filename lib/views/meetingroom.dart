@@ -15,7 +15,7 @@ class MeetingRoomState extends State<MeetingRoom>{
       body: Column(
         children: <Widget>[
           Expanded(
-            child: RoomOverview(),
+            child: RoomOverview(0),
           ),
         ],
       ),

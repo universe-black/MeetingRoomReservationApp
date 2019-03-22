@@ -47,7 +47,7 @@ class MyHomePageState extends State<MyHomePage>{
   final List<Widget> _fragments = [
     Schedule(),
     MeetingRoom(),
-    Appointment(),
+    Reservation(),
   ];
 
   void _onTapHandler(int index){
