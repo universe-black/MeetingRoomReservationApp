@@ -5,7 +5,10 @@ import 'package:badges/badges.dart';
 import './views/schedule.dart';
 import './views/meetingroom.dart';
 import './views/reservation.dart';
-import 'package:meeting/components/user_drawer.dart';
+import './views/login.dart';
+import './components/user_drawer.dart';
+import './utils/net_util.dart';
+import './model/user_entity.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,6 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
+        '/login': (BuildContext context) => new Login(),
         '/home': (BuildContext context) => new MyHomePage(),
       },
       localizationsDelegates: [
@@ -42,13 +46,26 @@ class MyHomePage extends StatefulWidget{
 }
 
 class MyHomePageState extends State<MyHomePage>{
+  User user;
+
   int _currentIndex = 0;
   final List<String> _names = ['我的安排', '会议室', '会议预约'];
   final List<Widget> _fragments = [
-    Schedule(),
+    Center(child: CircularProgressIndicator(),),
     MeetingRoom(),
     Reservation(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    NetUtil.getUser((data){
+      setState(() {
+        user = UserEntity.fromJson(data).extras.user;
+        _fragments[0] = Schedule(user.id);
+      });
+    });
+  }
 
   void _onTapHandler(int index){
     setState(() {
@@ -80,7 +97,7 @@ class MyHomePageState extends State<MyHomePage>{
           ),
         ],
       ),
-      drawer: new UserDrawer(),
+      drawer: user == null ? null : UserDrawer(user),
       body: _fragments[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -119,7 +136,13 @@ class SplashScreenState extends State<SplashScreen>{
   }
 
   void toGo(){
-    Navigator.of(context).pushReplacementNamed('/home');
+    NetUtil.getUser((data){
+      User user = UserEntity.fromJson(data).extras.user;
+      if(user != null)
+        Navigator.of(context).pushReplacementNamed('/home');
+      else
+        Navigator.of(context).pushReplacementNamed('/login');
+    });
   }
 
   @override

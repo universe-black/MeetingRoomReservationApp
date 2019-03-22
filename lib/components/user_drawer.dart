@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import '../components/user_config.dart';
+import '../model/user_entity.dart';
 
-class UserDrawer extends StatelessWidget{
+class UserDrawer extends StatefulWidget{
+  User user;
+
+  UserDrawer(this.user);
+
+  @override
+  State<StatefulWidget> createState() {
+    return new UserDrawerState(user);
+  }
+}
+
+class UserDrawerState extends State<UserDrawer>{
+  User user;
+
+  UserDrawerState(this.user);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -9,10 +26,18 @@ class UserDrawer extends StatelessWidget{
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text('Universe-Black', style: TextStyle(fontWeight: FontWeight.bold)),
-            accountEmail: Text('universe_black@qq.com'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('images/user.png'),
+            accountName: Text(user.realName, style: TextStyle(fontWeight: FontWeight.bold)),
+            accountEmail: Text(user.email),
+            currentAccountPicture: GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserConfig()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('images/user.png'),
+              ),
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,

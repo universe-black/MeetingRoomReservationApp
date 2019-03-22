@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class NetUtil{
   static BaseOptions options = new BaseOptions(
@@ -8,88 +10,91 @@ class NetUtil{
     headers: {},
   );
 
+  static String token = "Invalid";
+
   static Dio dio = new Dio(options);
+
+  static void reset() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString("token", "Invalid");
+    token = preferences.get("token");
+  }
+
+  static void getUser(Function callBack) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    token = preferences.getString("token");
+    Options options = new Options(headers: {HttpHeaders.cookieHeader: token});
+    Response response = await dio.get(
+      "/user/info",
+      options: options,
+    );
+    callBack(response.data);
+  }
+
+  static void modifyPwd(String oldPassword, String newPassword, Function callBack) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    token = preferences.getString("token");
+    Options options = new Options(headers: {HttpHeaders.cookieHeader: token});
+    Response response = await dio.post(
+      "/user/password",
+      queryParameters: {
+        "oldPassword": oldPassword,
+        "newPassword": newPassword,
+      },
+      options: options,
+    );
+    if(response.data["code"] == 200)
+      callBack(true);
+    else
+      callBack(false);
+  }
+
+  static void login(String username, String password, Function callBack) async{
+    Response response = await dio.post(
+      "/user/login",
+      queryParameters: {
+        "username": username,
+        "password": password,
+      },
+    );
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if(response.data["code"] == 200){
+      preferences.setString("token", response.headers["set-cookie"][0].split(';')[0]);
+      callBack(true);
+    }
+    else{
+      preferences.setString("token", "Invalid");
+      callBack(false);
+    }
+    token = preferences.getString("token");
+  }
+
+  static void logout(Function callBack) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    token = preferences.getString("token");
+    if(token != "Invalid"){
+      Options options = new Options(headers: {HttpHeaders.cookieHeader: token});
+      Response response = await dio.post(
+        "/user/logout",
+        options: options,
+      );
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString("token", "Invalid");
+      if(response.data["code"] == 200)
+        callBack(true);
+      else
+        callBack(false);
+    }
+  }
 
   static void get(String url, Function callBack, Map<String, dynamic> params) async{
     Response response = await dio.get(url, queryParameters: params);
     callBack(response.data);
   }
 
-}
+  static void post(String url, Function callBack, {Map<String, dynamic> data, Map<String, dynamic> params}) async{
+    Response response = await dio.post(url, data: data, queryParameters: params);
+    callBack(response.data);
+  }
 
-//class NetUtil{
-//  static const String BaseUrl = "http://111.231.70.170:8000";
-//  static const String GET = "get";
-//  static const String POST = "post";
-//
-//  static void get(String url, Function callBack,
-//      {Map<String, dynamic> params, Function errorCallBack}) async {
-//    _request(BaseUrl + url, callBack, method: GET, params: params, errorCallBack: errorCallBack);
-//  }
-//
-//  static void post(String url, Function callBack,
-//      {Map<String, dynamic> params, Function errorCallBack}) async {
-//    _request(url, callBack,
-//        method: POST, params: params, errorCallBack: errorCallBack);
-//  }
-//
-//  static void _request(String url, Function callBack,
-//      {String method,
-//        Map<String, dynamic> params,
-//        Function errorCallBack}) async {
-//    print("<net> url :<" + method + ">" + url);
-//
-//    if (params != null && params.isNotEmpty) {
-//      print("<net> params :" + params.toString());
-//    }
-//
-//    String errorMsg = "";
-//    int statusCode;
-//
-//    try {
-//      Response response;
-//      if (method == GET) {
-//        //组合GET请求的参数
-//        if (params != null && params.isNotEmpty) {
-//          StringBuffer sb = new StringBuffer("?");
-//          params.forEach((key, value) {
-//            sb.write("$key" + "=" + "$value" + "&");
-//          });
-//          String paramStr = sb.toString();
-//          paramStr = paramStr.substring(0, paramStr.length - 1);
-//          url += paramStr;
-//        }
-//        response = await Dio().get(url);
-//      } else {
-//        if (params != null && params.isNotEmpty) {
-//          response = await Dio().post(url, data: params);
-//        } else {
-//          response = await Dio().post(url);
-//        }
-//      }
-//
-//      statusCode = response.statusCode;
-//
-//      //处理错误部分
-//      if (statusCode < 0) {
-//        errorMsg = "网络请求错误,状态码:" + statusCode.toString();
-//        _handError(errorCallBack, errorMsg);
-//        return;
-//      }
-//
-//      if (callBack != null) {
-//        callBack(response.data["extras"]);
-//        print("<net> response data:" + response.data["extras"]);
-//      }
-//    } catch (exception) {
-//      _handError(errorCallBack, exception.toString());
-//    }
-//  }
-//
-//  static void _handError(Function errorCallback, String errorMsg) {
-//    if (errorCallback != null) {
-//      errorCallback(errorMsg);
-//    }
-//    print("<net> errorMsg :" + errorMsg);
-//  }
-//}
+}
