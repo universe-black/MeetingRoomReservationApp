@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:badges/badges.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import './views/schedule.dart';
 import './views/meetingroom.dart';
 import './views/reservation.dart';
 import './views/login.dart';
 import './components/user_drawer.dart';
+import './components/scan_result_page.dart';
+import './components/meeting_overview.dart';
 import './utils/net_util.dart';
 import './model/user_entity.dart';
 
@@ -73,6 +77,58 @@ class MyHomePageState extends State<MyHomePage>{
     });
   }
 
+  Future scan() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      if(barcode.split(" ").length != 2){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context){
+            return ScanResult(barcode);
+          }),
+        );
+      }
+      else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context){
+            return MeetingOverview(int.parse(barcode.split(" ")[0]), barcode.split(" ")[1]);
+          }),
+        );
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context){
+            return ScanResult('The user did not grant the camera permission!');
+          }),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context){
+            return ScanResult('Unknown error: $e');
+          }),
+        );
+      }
+    } on FormatException{
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context){
+          return ScanResult('null (User returned using the "back"-button before scanning anything. Result)');
+        }),
+      );
+    } catch (e) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context){
+          return ScanResult('Unknown error: $e');
+        }),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -92,8 +148,7 @@ class MyHomePageState extends State<MyHomePage>{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.center_focus_weak, color: Colors.white,),
-            tooltip: 'ScanFace',
-            onPressed: null,
+            onPressed: scan,
           ),
         ],
       ),
