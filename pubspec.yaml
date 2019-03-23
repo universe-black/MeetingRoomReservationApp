@@ -25,6 +25,7 @@ dependencies:
   barcode_scan: ^0.0.8
   flutter_calendar: ^0.0.8
   badges: ^0.0.6
+  fluttertoast: ^3.0.3
   flutter_localizations:
     sdk: flutter
 
@@ -47,7 +48,7 @@ flutter:
   uses-material-design: true
   assets:
     - images/user.png
-    - images/splash.png
+    - images/splash.gif
     - images/user_bg.png
 
   # To add assets to your application, add an assets section, like this:

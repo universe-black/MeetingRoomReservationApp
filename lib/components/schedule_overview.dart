@@ -46,8 +46,9 @@ class ScheduleOverviewState extends State<ScheduleOverview>{
     setState(() {
       meetingList = new List();
       for(int i = 0; i < meetingAll.length; i++){
-        if(meetingAll[i].startTime.substring(0, 10) == date)
-          meetingList.add(meetingAll[i]);
+        if(meetingAll[i].startTime.substring(0, 10) == date && meetingAll[i].state != null)
+          if(meetingAll[i].state >= 1 && meetingAll[i].state <= 3)
+            meetingList.add(meetingAll[i]);
       }
     });
   }
@@ -55,8 +56,9 @@ class ScheduleOverviewState extends State<ScheduleOverview>{
   void initMeetingList(String date){
     meetingList = new List();
     for(int i = 0; i < meetingAll.length; i++){
-      if(meetingAll[i].startTime.substring(0, 10) == date)
-        meetingList.add(meetingAll[i]);
+      if(meetingAll[i].startTime.substring(0, 10) == date && meetingAll[i].state != null)
+        if(meetingAll[i].state >= 1 && meetingAll[i].state <= 3)
+          meetingList.add(meetingAll[i]);
     }
   }
 
@@ -119,10 +121,22 @@ class MeetingOfDay extends StatelessWidget{
               width: double.infinity,
               child: Column(
                 children: <Widget>[
-                  Text('时间：' + meeting.startTime.substring(11, 16) + '——' + meeting.endTime.substring(11, 16)),
-                  Text('会议地点：' + meeting.room.name),
-                  Text('会议名称：' + meeting.name),
-                  Text('会议主持人：' + meeting.leader.realName),
+                  Align(
+                    child: Text('时间：' + meeting.startTime.substring(11, 16) + '——' + meeting.endTime.substring(11, 16), style: TextStyle(color: Colors.blue),),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Align(
+                    child: Text('会议地点：' + meeting.room.name, style: TextStyle(color: Colors.blue),),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Align(
+                    child: Text('会议名称：' + meeting.name),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Align(
+                    child: Text('会议主持人：' + meeting.leader.realName),
+                    alignment: Alignment.centerLeft,
+                  ),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/net_util.dart';
+import '../utils/tip_util.dart';
 
 class Login extends StatefulWidget{
   @override
@@ -24,7 +25,7 @@ class LoginState extends State<Login>{
       body: Column(
         children: <Widget>[
           SizedBox(
-            height: 50,
+            height: 30,
           ),
           SizedBox(
             height: 100,
@@ -36,6 +37,7 @@ class LoginState extends State<Login>{
               key: _formKey,
               child: ListView(
                 children: <Widget>[
+                  SizedBox(height: 30,),
                   _buildUsernameInput(),
                   _buildPasswordInput(),
                   SizedBox(height: 50,),
@@ -43,7 +45,7 @@ class LoginState extends State<Login>{
                   SizedBox(
                     height: 50,
                     child: Center(
-                      child: Text("登录遇到问题请与管理员联系", style: TextStyle(color: Colors.green[300], fontSize: 12)),
+                      child: Text("登录遇到问题请与管理员联系", style: TextStyle(color: Colors.blue[300], fontSize: 12)),
                     ),
                   ),
                 ],
@@ -100,6 +102,7 @@ class LoginState extends State<Login>{
             NetUtil.login(username, password, (bool val){
               if(val == true){
                 Navigator.of(context).pushReplacementNamed('/home');
+                TipUtil.showTip("登录成功");
               }
               else{
                 showDialog(context: context, builder: (ctx) => AlertDialog(

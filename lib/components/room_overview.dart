@@ -243,7 +243,7 @@ class RoomListViewState extends State<RoomListView>{
                 children: <Widget>[
                   MaterialButton(
                     child: Text(contents[i].name),
-                    color: Colors.green[400],
+                    color: Colors.blue[400],
                     highlightColor: Colors.green[200],
                     splashColor: Colors.white,
                     textColor: Colors.white,
@@ -282,7 +282,7 @@ class RoomListViewState extends State<RoomListView>{
                 children: <Widget>[
                   MaterialButton(
                     child: Text(contents[i].name),
-                    color: Colors.green[400],
+                    color: Colors.blue[400],
                     highlightColor: Colors.green[200],
                     splashColor: Colors.white,
                     textColor: Colors.white,

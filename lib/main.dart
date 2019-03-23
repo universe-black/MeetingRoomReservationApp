@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:badges/badges.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './views/schedule.dart';
 import './views/meetingroom.dart';
 import './views/reservation.dart';
@@ -12,6 +13,7 @@ import './components/user_drawer.dart';
 import './components/scan_result_page.dart';
 import './components/meeting_overview.dart';
 import './utils/net_util.dart';
+import './utils/tip_util.dart';
 import './model/user_entity.dart';
 
 void main() => runApp(MyApp());
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: '会议室预约系统',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.blue,
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
@@ -51,6 +53,7 @@ class MyHomePage extends StatefulWidget{
 
 class MyHomePageState extends State<MyHomePage>{
   User user;
+  int remindsNumber = 0;
 
   int _currentIndex = 0;
   final List<String> _names = ['我的安排', '会议室', '会议预约'];
@@ -60,6 +63,20 @@ class MyHomePageState extends State<MyHomePage>{
     Reservation(),
   ];
 
+  void setCount(int value) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if(preferences.getInt("remindsNumber") == null){
+      preferences.setInt("remindsNumber", 0);
+    }
+    setState(() {
+      remindsNumber = preferences.getInt("remindsNumber");
+    });
+    preferences.setInt("remindsNumber", remindsNumber + value);
+    setState(() {
+      remindsNumber = preferences.getInt("remindsNumber");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +84,14 @@ class MyHomePageState extends State<MyHomePage>{
       setState(() {
         user = UserEntity.fromJson(data).extras.user;
         _fragments[0] = Schedule(user.id);
+      });
+    });
+    Timer.periodic(Duration(seconds: 1), (timer){
+      NetUtil.getUnreadReminds((val){
+        if(val != -1)
+          setCount(val);
+        else
+          timer.cancel();
       });
     });
   }
@@ -80,11 +105,12 @@ class MyHomePageState extends State<MyHomePage>{
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      if(barcode.split(" ").length != 2){
+      RegExp regExp = new RegExp(r"^(\d+)\s\d\d-\d\d\d\s");
+      if(regExp.hasMatch(barcode)){
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context){
-            return ScanResult(barcode);
+            return MeetingOverview(int.parse(barcode.split(" ")[0]), barcode.split(" ")[1]);
           }),
         );
       }
@@ -92,7 +118,7 @@ class MyHomePageState extends State<MyHomePage>{
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context){
-            return MeetingOverview(int.parse(barcode.split(" ")[0]), barcode.split(" ")[1]);
+            return ScanResult(barcode);
           }),
         );
       }
@@ -153,7 +179,7 @@ class MyHomePageState extends State<MyHomePage>{
         leading: Builder(
           builder: (BuildContext context){
             return BadgeIconButton(
-              itemCount: 9,
+              itemCount: remindsNumber,
               icon: Icon(Icons.menu, color: Colors.white, size: 35,),
               onPressed: (){
                 Scaffold.of(context).openDrawer();
@@ -163,7 +189,7 @@ class MyHomePageState extends State<MyHomePage>{
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.center_focus_weak, color: Colors.white,),
+            icon: Icon(Icons.center_focus_strong, color: Colors.white, size: 30,),
             onPressed: scan,
           ),
         ],
@@ -202,15 +228,17 @@ class SplashScreen extends StatefulWidget{
 
 class SplashScreenState extends State<SplashScreen>{
   startTime() async{
-    var _duration = new Duration(seconds: 2);
+    var _duration = new Duration(milliseconds: 1500);
     return new Timer(_duration,toGo);
   }
 
   void toGo(){
     NetUtil.getUser((data){
       User user = UserEntity.fromJson(data).extras.user;
-      if(user != null)
+      if(user != null) {
         Navigator.of(context).pushReplacementNamed('/home');
+        TipUtil.showTip("欢迎回来，" + user.realName);
+      }
       else
         Navigator.of(context).pushReplacementNamed('/login');
     });
@@ -224,11 +252,7 @@ class SplashScreenState extends State<SplashScreen>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image.asset('images/splash.png'),
-      ),
-    );
+    return Image.asset('images/splash.gif', fit: BoxFit.fill,);
   }
 
 }

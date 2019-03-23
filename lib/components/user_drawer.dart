@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import '../components/user_config.dart';
+import '../components/apply_progress.dart';
+import '../components/history_reminds.dart';
 import '../model/user_entity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDrawer extends StatefulWidget{
   User user;
@@ -18,6 +21,26 @@ class UserDrawerState extends State<UserDrawer>{
   User user;
 
   UserDrawerState(this.user);
+
+  int remindsNumber = 0;
+
+  void cleanCount() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setInt("remindsNumber", 0);
+  }
+
+  void getCount() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      remindsNumber = preferences.getInt("remindsNumber");
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +67,14 @@ class UserDrawerState extends State<UserDrawer>{
             ),
           ),
           ListTile(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context){
+                    return ApplyProgress(user.id);
+                  })
+              );
+            },
             title: Text('我的预约'),
             leading: BadgeIconButton(
               itemCount: 0,
@@ -51,9 +82,19 @@ class UserDrawerState extends State<UserDrawer>{
             ),
           ),
           ListTile(
+            onTap: (){
+              cleanCount();
+              getCount();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context){
+                  return HistoryReminds(user);
+                })
+              );
+            },
             title: Text('历史通知'),
             leading: BadgeIconButton(
-              itemCount: 9,
+              itemCount: remindsNumber,
               icon: Icon(Icons.add_alert, size: 40),
             ),
           ),

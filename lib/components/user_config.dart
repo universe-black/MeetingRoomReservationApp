@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../views/login.dart';
 import '../utils/net_util.dart';
+import '../utils/tip_util.dart';
 import '../components/modify_pwd.dart';
 
 class UserConfig extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: Text("用户选项"),
       ),
@@ -15,7 +17,7 @@ class UserConfig extends StatelessWidget{
         children: <Widget>[
           Stack(
             children: <Widget>[
-              Image.asset("images/user_bg.png", fit: BoxFit.cover,),
+              Image.asset("images/user_bg.png", fit: BoxFit.fill,),
               Positioned(
                 top: 50,
                 bottom: 50,
@@ -47,14 +49,14 @@ class UserConfig extends StatelessWidget{
         );
       },
       child: Card(
-        color: Colors.green,
+        color: Colors.white,
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(13),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("修改密码", style: TextStyle(fontSize: 18, color: Colors.white),),
-              Icon(Icons.arrow_forward_ios, color: Colors.white),
+              Text("修改密码", style: TextStyle(fontSize: 18, color: Colors.black),),
+              Icon(Icons.arrow_forward_ios, color: Colors.black),
             ],
           ),
         ),
@@ -68,6 +70,7 @@ class UserConfig extends StatelessWidget{
         NetUtil.logout((bool val){
           if(val == true){
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){return Login();}), (route) => route == null);
+            TipUtil.showTip("注销成功");
           }
           else{
             showDialog(context: context, builder: (ctx) => AlertDialog(
@@ -78,11 +81,17 @@ class UserConfig extends StatelessWidget{
         });
       },
       child: Card(
-        color: Colors.red,
+        color: Colors.white,
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(13),
           child: Center(
-            child: Text("注销并退出", style: TextStyle(fontSize: 18, color: Colors.white),),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("注销并退出", style: TextStyle(fontSize: 18, color: Colors.black),),
+                Icon(Icons.arrow_forward_ios, color: Colors.black),
+              ],
+            ),
           ),
         ),
       ),

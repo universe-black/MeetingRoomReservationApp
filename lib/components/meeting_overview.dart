@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar/flutter_calendar.dart';
+import '../components/reservation_form.dart';
 import '../utils/net_util.dart';
 import '../model/meeting.dart';
 
@@ -82,6 +83,19 @@ class MeetingOverviewState extends State<MeetingOverview>{
       return Scaffold(
         appBar: AppBar(
           title: Text(roomName),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add, color: Colors.white, size: 30,),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context){
+                    return ReservationForm(typeCode: 1, roomId: roomId, roomName: roomName,);
+                  })
+                );
+              },
+            ),
+          ],
         ),
         body: Column(
           children: <Widget>[
@@ -132,9 +146,18 @@ class MeetingOfDay extends StatelessWidget{
               width: double.infinity,
               child: Column(
                 children: <Widget>[
-                  Text('时间：' + meeting.startTime.substring(11, 16) + '——' + meeting.endTime.substring(11, 16)),
-                  Text('会议名称：' + meeting.name),
-                  Text('会议主持人：' + meeting.leader.realName),
+                  Align(
+                    child: Text('时间：' + meeting.startTime.substring(11, 16) + '——' + meeting.endTime.substring(11, 16), style: TextStyle(color: Colors.blue),),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Align(
+                    child: Text('会议名称：' + meeting.name),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Align(
+                    child: Text('会议主持人：' + meeting.leader.realName),
+                    alignment: Alignment.centerLeft,
+                  ),
                 ],
               ),
             ),
