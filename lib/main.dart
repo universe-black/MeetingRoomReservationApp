@@ -98,34 +98,50 @@ class MyHomePageState extends State<MyHomePage>{
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context){
-            return ScanResult('The user did not grant the camera permission!');
-          }),
-        );
+        showDialog(context: context, builder: (ctx) => AlertDialog(
+          title: Text("没有权限"),
+          content: Text('用户没有授予摄像头权限，\n请于手机设置中调整！'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("确定"),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ));
+        Navigator.of(context).pop();
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context){
-            return ScanResult('Unknown error: $e');
-          }),
-        );
+        showDialog(context: context, builder: (ctx) => AlertDialog(
+          title: Text("未知错误"),
+          content: Text('Unknown error: $e'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("确定"),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ));
+        Navigator.of(context).pop();
       }
     } on FormatException{
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context){
-          return ScanResult('null (User returned using the "back"-button before scanning anything. Result)');
-        }),
-      );
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){return MyHomePage();}), (route) => route == null);
     } catch (e) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context){
-          return ScanResult('Unknown error: $e');
-        }),
-      );
+      showDialog(context: context, builder: (ctx) => AlertDialog(
+        title: Text("未知错误"),
+        content: Text('Unknown error: $e'),
+        actions: <Widget>[
+         FlatButton(
+           child: Text("确定"),
+           onPressed: (){
+             Navigator.of(context).pop();
+           },
+         )
+        ],
+      ));
+      Navigator.of(context).pop();
     }
   }
 
