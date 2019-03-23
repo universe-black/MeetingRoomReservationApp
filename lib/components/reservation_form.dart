@@ -104,7 +104,7 @@ class ReservationFormState extends State<ReservationForm>{
               _buildDatePicker(),
               _buildStartTimePicker(),
               _buildEndTimePicker(),
-              _buildLocationView(),
+              _buildLocationPicker(),
               _buildUserPicker(),
               _buildNameText(),
               _buildDescriptionText(),

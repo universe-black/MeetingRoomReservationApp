@@ -130,7 +130,7 @@ class NetUtil{
         data: userInfo,
       );
       if(response.data["code"] == 200){
-        TipUtil.showTip("会议申请提交成功，请耐心等待审核");
+        TipUtil.showTip("会议修改申请提交成功，请耐心等待审核");
         callBack(true);
       }
       else{
