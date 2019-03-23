@@ -52,6 +52,18 @@ class MyHomePage extends StatefulWidget{
 }
 
 class MyHomePageState extends State<MyHomePage>{
+  Future<bool> doubleClickBack() {
+    int last = 0;
+    int now = DateTime.now().millisecond;
+    if (now - last < 500) {
+      last = DateTime.now().millisecond;
+      TipUtil.showTip("再按一次退出应用");
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
+  }
+
   User user;
   int remindsNumber = 0;
 
@@ -173,46 +185,49 @@ class MyHomePageState extends State<MyHomePage>{
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text(_names[_currentIndex]),
-        leading: Builder(
-          builder: (BuildContext context){
-            return BadgeIconButton(
-              itemCount: remindsNumber,
-              icon: Icon(Icons.menu, color: Colors.white, size: 35,),
-              onPressed: (){
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+    return new WillPopScope(
+      onWillPop: doubleClickBack,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_names[_currentIndex]),
+          leading: Builder(
+            builder: (BuildContext context){
+              return BadgeIconButton(
+                itemCount: remindsNumber,
+                icon: Icon(Icons.menu, color: Colors.white, size: 35,),
+                onPressed: (){
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.center_focus_strong, color: Colors.white, size: 30,),
+              onPressed: scan,
+            ),
+          ],
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.center_focus_strong, color: Colors.white, size: 30,),
-            onPressed: scan,
-          ),
-        ],
-      ),
-      drawer: user == null ? null : UserDrawer(user),
-      body: _fragments[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTapHandler,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.date_range),
-            title: Text('我的安排'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance),
-            title: Text('会议室'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.alarm_add),
-            title: Text('会议预约'),
-          ),
-        ],
+        drawer: user == null ? null : UserDrawer(user),
+        body: _fragments[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTapHandler,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.date_range),
+              title: Text('我的安排'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance),
+              title: Text('会议室'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.alarm_add),
+              title: Text('会议预约'),
+            ),
+          ],
+        ),
       ),
     );
   }

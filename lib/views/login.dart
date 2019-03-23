@@ -10,49 +10,64 @@ class Login extends StatefulWidget{
 }
 
 class LoginState extends State<Login>{
+  Future<bool> doubleClickBack() {
+    int last = 0;
+    int now = DateTime.now().millisecond;
+    if (now - last < 500) {
+      TipUtil.showTip("再按一次退出应用");
+      last = DateTime.now().millisecond;
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
+  }
+
   String username;
   String password;
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text("用户登录"),
+    return WillPopScope(
+      onWillPop: doubleClickBack,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text("用户登录"),
+          ),
         ),
-      ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 30,
-          ),
-          SizedBox(
-            height: 100,
-            width: 100,
-            child: Image.asset('images/user.png'),
-          ),
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(height: 30,),
-                  _buildUsernameInput(),
-                  _buildPasswordInput(),
-                  SizedBox(height: 50,),
-                  _buildSubmitButton(),
-                  SizedBox(
-                    height: 50,
-                    child: Center(
-                      child: Text("登录遇到问题请与管理员联系", style: TextStyle(color: Colors.blue[300], fontSize: 12)),
+        body: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: Image.asset('images/ic_logo.png'),
+            ),
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(height: 30,),
+                    _buildUsernameInput(),
+                    _buildPasswordInput(),
+                    SizedBox(height: 50,),
+                    _buildSubmitButton(),
+                    SizedBox(
+                      height: 50,
+                      child: Center(
+                        child: Text("登录遇到问题请与管理员联系", style: TextStyle(color: Colors.blue[300], fontSize: 12)),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

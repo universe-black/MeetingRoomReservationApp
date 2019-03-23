@@ -14,8 +14,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="meeting"
-        android:icon="@mipmap/ic_launcher">
+        android:label="会议室预约"
+        android:icon="@mipmap/ic_logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
