@@ -60,8 +60,8 @@ class ReservationFormState extends State<ReservationForm>{
   void initForm(){
     setState(() {
       meetingDate = meeting.startTime.substring(0, 10);
-      meetingStartTime = meeting.startTime.substring(11, 16);
-      meetingEndTime = meeting.endTime.substring(11, 16);
+      meetingStartTime = meeting.startTime.substring(11, 15);
+      meetingEndTime = meeting.endTime.substring(11, 15);
       meetingRoomId = meeting.room.id.toString();
       meetingRoom = meeting.room.name;
       meetingName = meeting.name;
@@ -155,11 +155,11 @@ class ReservationFormState extends State<ReservationForm>{
         decoration: BoxDecoration(
           color: Colors.grey[350],
         ),
-        padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("会议日期：$meetingDate", style: TextStyle(fontSize: 16)),
+            Text("会议日期：$meetingDate"),
             Row(
               children: <Widget>[
                 Text("选择日期", style: TextStyle(fontSize: 12)),
@@ -193,11 +193,11 @@ class ReservationFormState extends State<ReservationForm>{
         decoration: BoxDecoration(
           color: Colors.grey[200],
         ),
-        padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("会议开始时间：$meetingStartTime", style: TextStyle(fontSize: 16)),
+            Text("会议开始时间：$meetingStartTime"),
             Row(
               children: <Widget>[
                 Text("选择开始时间", style: TextStyle(fontSize: 12)),
@@ -215,7 +215,7 @@ class ReservationFormState extends State<ReservationForm>{
       onTap: (){
         showTimePicker(
           context: context,
-          initialTime: meetingEndTime == "" ? TimeOfDay(hour: int.parse(meetingStartTime.substring(0, 2)), minute: int.parse(meetingStartTime.substring(3))) : TimeOfDay(hour: int.parse(meetingEndTime.substring(0, 2)), minute: int.parse(meetingEndTime.substring(3))),
+          initialTime: meetingStartTime == "" ? TimeOfDay.now() : meetingEndTime == "" ? TimeOfDay(hour: int.parse(meetingStartTime.substring(0, 2)), minute: int.parse(meetingStartTime.substring(3))) : TimeOfDay(hour: int.parse(meetingEndTime.substring(0, 2)), minute: int.parse(meetingEndTime.substring(3))),
         ).then((val){
           if(val.toString().compareTo(TimeOfDay(hour: int.parse(meetingStartTime.substring(0, 2)), minute: int.parse(meetingStartTime.substring(3))).toString()) <= 0){
             showDialog(context: context, builder: (ctx) => _getAlertDialog("错误的会议结束时间", "会议结束时间应在会议开始时间之后！"));
@@ -231,11 +231,11 @@ class ReservationFormState extends State<ReservationForm>{
         decoration: BoxDecoration(
           color: Colors.grey[350],
         ),
-        padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("会议结束时间：$meetingEndTime", style: TextStyle(fontSize: 16)),
+            Text("会议结束时间：$meetingEndTime"),
             Row(
               children: <Widget>[
                 Text("选择结束时间", style: TextStyle(fontSize: 12)),
@@ -253,11 +253,11 @@ class ReservationFormState extends State<ReservationForm>{
       decoration: BoxDecoration(
         color: Colors.grey[200],
       ),
-      padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+      padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("会议地点：$meetingRoom", style: TextStyle(fontSize: 16)),
+          Text("会议地点：$meetingRoom"),
           Row(
             children: <Widget>[
               Text("会议地点已选定", style: TextStyle(fontSize: 12)),
@@ -314,11 +314,11 @@ class ReservationFormState extends State<ReservationForm>{
         decoration: BoxDecoration(
           color: Colors.grey[200],
         ),
-        padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("会议地点：$meetingRoom", style: TextStyle(fontSize: 16)),
+            Text("会议地点：$meetingRoom"),
             Row(
               children: <Widget>[
                 Text("选择会议地点", style: TextStyle(fontSize: 12)),
@@ -353,11 +353,11 @@ class ReservationFormState extends State<ReservationForm>{
         decoration: BoxDecoration(
           color: Colors.grey[350],
         ),
-        padding: EdgeInsets.only(left: 10, top: 16, bottom: 16, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("与会人员：$isUserSelected", style: TextStyle(fontSize: 16)),
+            Text("与会人员：$isUserSelected"),
             Row(
               children: <Widget>[
                 Text("选择与会人员", style: TextStyle(fontSize: 12)),
@@ -377,7 +377,7 @@ class ReservationFormState extends State<ReservationForm>{
       ),
       padding: EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        maxLength: 16,
+        maxLength: 15,
         decoration: InputDecoration(labelText: "会议名称"),
         onSaved: (val) => meetingName = val,
         validator: (val){

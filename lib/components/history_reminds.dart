@@ -167,14 +167,14 @@ class RemindsOfDay extends StatelessWidget{
             width: 26.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.lightGreen,
+              color: Colors.lightBlue,
             ),
             child: Container(
               margin: EdgeInsets.all(5.0),
               height: 26.0,
               width: 26.0,
               decoration:
-              BoxDecoration(shape: BoxShape.circle, color: Colors.red[400]),
+              BoxDecoration(shape: BoxShape.circle, color: Colors.white),
             ),
           ),
         )

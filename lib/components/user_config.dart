@@ -5,6 +5,10 @@ import '../utils/tip_util.dart';
 import '../components/modify_pwd.dart';
 
 class UserConfig extends StatelessWidget{
+  String photoPath;
+
+  UserConfig(this.photoPath);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +29,7 @@ class UserConfig extends StatelessWidget{
                 right: 130,
                 child: SizedBox(
                   child: CircleAvatar(
-                    backgroundImage: AssetImage('images/user.png'),
+                    backgroundImage: NetworkImage(NetUtil.options.baseUrl + "/" + photoPath),
                   ),
                 ),
               ),
@@ -55,7 +59,7 @@ class UserConfig extends StatelessWidget{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("修改密码", style: TextStyle(fontSize: 18, color: Colors.black),),
+              Text("修改密码", style: TextStyle(color: Colors.black),),
               Icon(Icons.arrow_forward_ios, color: Colors.black),
             ],
           ),
@@ -88,7 +92,7 @@ class UserConfig extends StatelessWidget{
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("注销并退出", style: TextStyle(fontSize: 18, color: Colors.black),),
+                Text("注销并退出", style: TextStyle(color: Colors.black),),
                 Icon(Icons.arrow_forward_ios, color: Colors.black),
               ],
             ),

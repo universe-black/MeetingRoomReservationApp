@@ -4,6 +4,7 @@ import '../components/user_config.dart';
 import '../components/apply_progress.dart';
 import '../components/history_reminds.dart';
 import '../model/user_entity.dart';
+import '../utils/net_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDrawer extends StatefulWidget{
@@ -55,11 +56,11 @@ class UserDrawerState extends State<UserDrawer>{
               onTap: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserConfig()),
+                  MaterialPageRoute(builder: (context) => UserConfig(user.photoPath)),
                 );
               },
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/user.png'),
+                backgroundImage: NetworkImage(NetUtil.options.baseUrl + "/" + user.photoPath),
               ),
             ),
             decoration: BoxDecoration(

@@ -37,24 +37,40 @@ User _$UserFromJson(Map<String, dynamic> json) {
       json['id'] as int,
       json['username'] as String,
       json['realName'] as String,
-      json['password'] as String,
       json['phone'] as String,
-      json['email'] as String);
+      json['email'] as String,
+      json['photoPath'] as String,
+      json['department'] == null
+          ? null
+          : new Department.fromJson(
+              json['department'] as Map<String, dynamic>));
 }
 
 abstract class _$UserSerializerMixin {
   int get id;
   String get username;
   String get realName;
-  String get password;
   String get phone;
   String get email;
+  String get photoPath;
+  Department get department;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'username': username,
         'realName': realName,
-        'password': password,
         'phone': phone,
-        'email': email
+        'email': email,
+        'photoPath': photoPath,
+        'department': department
       };
+}
+
+Department _$DepartmentFromJson(Map<String, dynamic> json) {
+  return new Department(json['id'] as int, json['name'] as String);
+}
+
+abstract class _$DepartmentSerializerMixin {
+  int get id;
+  String get name;
+  Map<String, dynamic> toJson() => <String, dynamic>{'id': id, 'name': name};
 }

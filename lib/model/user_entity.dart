@@ -44,18 +44,37 @@ class User extends Object with _$UserSerializerMixin{
   @JsonKey(name: 'realName')
   String realName;
 
-  @JsonKey(name: 'password')
-  String password;
-
   @JsonKey(name: 'phone')
   String phone;
 
   @JsonKey(name: 'email')
   String email;
 
-  User(this.id,this.username,this.realName,this.password,this.phone,this.email,);
+  @JsonKey(name: 'photoPath')
+  String photoPath;
+
+  @JsonKey(name: 'department')
+  Department department;
+
+  User(this.id,this.username,this.realName,this.phone,this.email,this.photoPath,this.department,);
 
   factory User.fromJson(Map<String, dynamic> srcJson) => _$UserFromJson(srcJson);
+
+}
+
+
+@JsonSerializable()
+class Department extends Object with _$DepartmentSerializerMixin{
+
+  @JsonKey(name: 'id')
+  int id;
+
+  @JsonKey(name: 'name')
+  String name;
+
+  Department(this.id,this.name,);
+
+  factory Department.fromJson(Map<String, dynamic> srcJson) => _$DepartmentFromJson(srcJson);
 
 }
 

@@ -26,6 +26,11 @@ class MyApp extends StatelessWidget {
       title: '会议室预约系统',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(body1: TextStyle(fontSize: 14), body2: TextStyle(fontSize: 14)),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: 18))),
+        inputDecorationTheme: InputDecorationTheme(labelStyle: TextStyle(fontSize: 14), ),
+        dialogTheme: DialogTheme(contentTextStyle: TextStyle(fontSize: 14, color: Colors.black)),
+        primaryTextTheme: TextTheme(display1: TextStyle(fontSize: 20)),
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
