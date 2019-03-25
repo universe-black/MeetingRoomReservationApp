@@ -103,6 +103,10 @@ class MyHomePageState extends State<MyHomePage>{
         _fragments[0] = Schedule(user.id);
       });
     });
+    startTimer();
+  }
+
+  void startTimer(){
     Timer.periodic(Duration(seconds: 1), (timer){
       NetUtil.getUnreadReminds((val){
         if(val != -1)
@@ -122,7 +126,7 @@ class MyHomePageState extends State<MyHomePage>{
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      RegExp regExp = new RegExp(r"^(\d+)\s\d\d-\d\d\d\s");
+      RegExp regExp = new RegExp(r"^\d+\s\d\d-\d\d\d");
       if(regExp.hasMatch(barcode)){
         Navigator.push(
           context,
